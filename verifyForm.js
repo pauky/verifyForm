@@ -112,6 +112,7 @@
         // 隐藏提示内容
         $(o.allTips+', .'+o.valClass).css('display', 'none');
 
+        // 每个验证表单项绑定事件
         (function () {
             var $formItems = null,
                 i,
@@ -154,10 +155,11 @@
                     }
                 }
             }
+            
+            // 检查不通过时，不提交
             if ($that.data('noSub')) {
                 noSub = true;
             }
-            // 检查不通过时，不提交
             if (noSub) {
                 // 初始化并撤消表单提交
                 $that.removeData('noSub');
