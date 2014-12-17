@@ -7,8 +7,7 @@
     'use strict';
 
     $.fn.verifyForm = function (options) {
-        var o = null,
-            noSub = false;
+        var o = null;
 
         // 初始化全局对象o和表单项数组o.items
         var init = function (options) {
@@ -128,7 +127,7 @@
                     $formItems.eq(i).blur(function () {
                         var $self = $(this);
                         if (testItem(o.items, $self)) {
-                            noSub = true;
+                            $that.data('noSub', true);
                         }
                         $that.data('revise', true); // 标记填写过表单
                     });
@@ -141,19 +140,28 @@
             var $that = $(this),
                 $formItems = null,
                 i,
-                formItemsLength = 0;
+                formItemsLength = 0,
+                noSub = false;
 
             // 判断是否没有填写表单就直接点击提交
             if (!$that.data('revise')) {
                 $formItems = $that.find('input[type="text"], textarea'); // 取出所有表单项
                 formItemsLength = $formItems.length;
                 for (i = 0; i < formItemsLength; i += 1) {
-                    noSub = testItem(o.items, $formItems.eq(i));
+                    if (testItem(o.items, $formItems.eq(i))) {
+                        $that.data('noSub', true);
+                        return false; // 只要有一项不符合要求，则退回
+                    }
                 }
+            }
+            if ($that.data('noSub')) {
+                noSub = true;
             }
             // 检查不通过时，不提交
             if (noSub) {
-                noSub = false;
+                // 初始化并撤消表单提交
+                $that.removeData('noSub');
+                $that.removeData('revise');
                 return false;
             }
         });
