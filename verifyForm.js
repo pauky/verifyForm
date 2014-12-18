@@ -127,10 +127,11 @@
                     // 为每个表单项增加失去焦点的事件
                     $formItems.eq(i).blur(function () {
                         var $self = $(this);
+                        console.log($that);
                         if (testItem(o.items, $self)) {
-                            $that.data('noSub', true);
+                            $.data($that[0], 'noSub', true);
                         }
-                        $that.data('revise', true); // 标记填写过表单
+                        $.data($that[0], 'revise', true); // 标记填写过表单
                     });
                 }
             });
@@ -145,19 +146,19 @@
                 noSub = false;
 
             // 判断是否没有填写表单就直接点击提交
-            if (!$that.data('revise')) {
+            if (!$.data($that, 'revise')) {
                 $formItems = $that.find('input[type="text"], textarea'); // 取出所有表单项
                 formItemsLength = $formItems.length;
                 for (i = 0; i < formItemsLength; i += 1) {
                     if (testItem(o.items, $formItems.eq(i))) {
-                        $that.data('noSub', true);
+                        $.data($that, 'noSub', true);
                         return false; // 只要有一项不符合要求，则退回
                     }
                 }
             }
             
             // 检查不通过时，不提交
-            if ($that.data('noSub')) {
+            if ($.data($that, 'noSub')) {
                 noSub = true;
             }
             if (noSub) {
